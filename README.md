@@ -10,7 +10,7 @@ Three labs covering core Natural Language Processing topics, implemented from sc
 |-----|-------|--------|---------|
 | [Lab 2](lab2.ipynb) | Word Embeddings + NER | Skip-Gram Word2Vec, FFN, HMM | CoNLL-2003 |
 | [Lab 3](lab3.ipynb) | Neural Machine Translation | Transformer, BiLSTM+Attention | FR→EN parallel corpus |
-| [A4](a4_neural_machine_translation.ipynb) | NMT (Assignment) | Encoder-Decoder Transformer | FR→EN (Princeton COS484) |
+| [Lab 4](a4_neural_machine_translation.ipynb) | NMT (Assignment) | Encoder-Decoder Transformer | FR→EN (Princeton COS484) |
 
 ---
 
