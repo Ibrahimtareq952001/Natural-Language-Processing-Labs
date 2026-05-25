@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Data & model files
+data/
+resources/
+checkpoints/
+*.pt
+*.pth
+*.npy
+*.pkl
+*.zip
+
+# Generated outputs
+*.png
+word_embeddings.npy
+model.pt
+model.pt.optim
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Generator script (not needed in repo)
+generate_notebooks.py
