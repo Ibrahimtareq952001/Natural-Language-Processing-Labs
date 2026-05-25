@@ -40,5 +40,8 @@ model.pt.optim
 .vscode/
 .idea/
 
-# Generator script (not needed in repo)
+# Original Colab exports (notebooks are the canonical version)
+lab2.py
+lab3.py
+a4_neural_machine_translation.py
 generate_notebooks.py
