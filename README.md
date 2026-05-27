@@ -1,163 +1,111 @@
-# NLP Course Labs — CSED
+<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=2,8,16&height=180&section=header&text=NLP%20Course%20Labs&fontSize=42&fontColor=fff&animation=twinkling&fontAlignY=38&desc=N-Grams%20%7C%20Word2Vec%20%7C%20Transformers%20%7C%20Q-LoRA%20%26%20DPO&descAlignY=58&descSize=16&descColor=cbd5e1"/>
 
-Three labs covering core Natural Language Processing topics, implemented from scratch in PyTorch and evaluated on standard benchmarks.
+<div align="center">
 
----
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
+![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white)
+![HuggingFace](https://img.shields.io/badge/HuggingFace-FFD21E?style=flat-square&logo=huggingface&logoColor=black)
+![NumPy](https://img.shields.io/badge/NumPy-013243?style=flat-square&logo=numpy&logoColor=white)
+![Jupyter](https://img.shields.io/badge/Jupyter-F37626?style=flat-square&logo=jupyter&logoColor=white)
 
-## Labs Overview
-
-| Lab | Topic | Models | Dataset |
-|-----|-------|--------|---------|
-| [Lab 2](lab2.ipynb) | Word Embeddings + NER | Skip-Gram Word2Vec, FFN, HMM | CoNLL-2003 |
-| [Lab 3](lab3.ipynb) | Neural Machine Translation | Transformer, BiLSTM+Attention | FR→EN parallel corpus |
-| [Lab 4](a4_neural_machine_translation.ipynb) | NMT (Assignment) | Encoder-Decoder Transformer | FR→EN (Princeton COS484) |
+</div>
 
 ---
 
-## Lab 2 — Word Embeddings & Named Entity Recognition
+## Overview
 
-**[`lab2.ipynb`](lab2.ipynb)**
+Four progressive NLP labs implemented **from scratch** in Python (NumPy + PyTorch), covering classical NLP through modern LLM fine-tuning — built as part of the NLP course at Alexandria University (Computer & System Engineering, 2026).
+
+---
+
+## Labs Summary
+
+| Lab | Topic | Key Models | Dataset | Result |
+|-----|-------|-----------|---------|--------|
+| **Lab 1** | Classical NLP | N-gram LMs, Naïve Bayes, Logistic Regression | Shakespeare + Emotion corpus | **94% macro-F1** |
+| **Lab 2** | Word Embeddings + NER | Word2Vec (Skip-Gram), FFNN, HMM + Viterbi | CoNLL-2003 | 9-class NER |
+| **Lab 3** | Neural Machine Translation | Transformer, Bi-LSTM + Bahdanau Attention | FR→EN corpus | BLEU evaluation |
+| **Lab 4** | LLM Fine-Tuning | Q-LoRA (Qwen 1.5B), DPO alignment | Code generation | β-sensitivity analysis |
+
+---
+
+## Lab 1 — Classical NLP
+
+**N-Gram Language Models & Text Classification (Oct 2024)**
+
+- Built **unigram → 10-gram** language models; evaluated using **perplexity** on held-out Shakespeare text
+- Implemented **Naïve Bayes** classifier from scratch with NumPy for 6-class emotion recognition
+- Implemented **Logistic Regression** with bi-gram features from scratch
+- Produced confusion matrices and computed precision, recall, and F1 scores
+- **Achieved 94% macro-F1** on the emotion recognition dataset
+
+---
+
+## Lab 2 — Word Embeddings + Named Entity Recognition
+
+**[`lab2.ipynb`](lab2.ipynb) — Nov 2024**
 
 ### Part 1: Word2Vec Skip-Gram with Negative Sampling
-Implements the original Word2Vec Skip-Gram objective (Mikolov et al., 2013) entirely in PyTorch:
+- Implements the original Mikolov et al. (2013) objective entirely in PyTorch
+- Custom vocabulary, negative sampling distribution ∝ freq^(3/4)
+- Word analogy evaluation: `king − man + woman ≈ queen`
+- t-SNE visualization of embedding space
 
-- Custom vocabulary with minimum-frequency filtering
-- Negative sampling distribution proportional to word frequency^(3/4)
-- Separate center and context embedding matrices, averaged at inference
-- Word similarity and analogy evaluation (cosine similarity)
-- t-SNE visualization of the learned embedding space
+### Part 2: Named Entity Recognition (9 classes, CoNLL-2003)
+Two models compared:
 
-### Part 2: Named Entity Recognition (NER)
-Two models compared on the CoNLL-2003 benchmark (PER, ORG, LOC, MISC entities):
-
-**Feed-Forward Neural Network**
-- Token-level classifier using pre-trained Word2Vec embeddings as input
-- Multi-layer MLP with ReLU activations and dropout
-- Trained with cross-entropy loss (padding tokens ignored)
-
-**Hidden Markov Model + Viterbi**
-- First-order HMM with Laplace smoothing
-- Unknown-word handling with boosted entity probabilities
-- Exact Viterbi decoding
-
-Both models evaluated with precision, recall, and weighted F1 on the test set.
-
-### Running Lab 2
-```bash
-pip install torch datasets scikit-learn matplotlib
-jupyter notebook lab2.ipynb
-```
+| Model | Approach |
+|-------|---------|
+| **FFNN** | Token-level MLP using pre-trained Word2Vec embeddings |
+| **HMM + Viterbi** | Generative model with Viterbi decoding for sequence labeling |
 
 ---
 
-## Lab 3 — Neural Machine Translation
+## Lab 3 — Neural Machine Translation (French → English)
 
-**[`lab3.ipynb`](lab3.ipynb)**
+**[`lab3.ipynb`](lab3.ipynb) — Dec 2024**
 
-Implements two Seq2Seq architectures for French → English translation:
+Two seq2seq architectures built and compared:
 
-### Transformer (from scratch)
-- Learned positional embeddings
-- Multi-head self-attention and cross-attention built without `nn.MultiheadAttention`
-- Causal masking via lower-triangular mask
-- Weight-tied output projection
-- Beam search decoding (beam size 4)
-
-### BiLSTM RNN with Additive Attention
-- Bidirectional LSTM encoder
-- Bahdanau (additive) attention: `v^T tanh(W_enc * h_enc + W_dec * h_dec)`
-- Decoder input = [embedding; context vector] (deep output)
-- Beam search decoding
-
-Both models evaluated with corpus-level BLEU. Attention weights visualized as heatmaps.
-
-### Data Setup
-```
-data/
-  train.fr        train.en
-  validation.fr   validation.en
-  test.fr         test.en
-tokenizers/
-  fr/             (HuggingFace BPE tokenizer)
-  en/
-```
-
-```bash
-pip install torch transformers datasets matplotlib
-jupyter notebook lab3.ipynb
-```
+| Architecture | Details |
+|-------------|---------|
+| **Transformer** | Encoder-decoder, vectorized multi-head attention, beam search decoding, BLEU scoring |
+| **Bi-LSTM + Attention** | Bidirectional encoder, Bahdanau attention, attention weight visualization |
 
 ---
 
-## Assignment 4 — NMT Transformer (Princeton COS484)
+## Lab 4 — LLM Fine-Tuning & Alignment
 
-**[`a4_neural_machine_translation.ipynb`](a4_neural_machine_translation.ipynb)**
+**Dec 2024**
 
-A complete implementation of the encoder-decoder Transformer for the COS484 NMT assignment.
+| Part | Method | Model |
+|------|--------|-------|
+| **I** | Supervised Fine-Tuning (SFT) | Qwen 1.5B |
+| **II** | Q-LoRA PEFT | Qwen 1.5B — code generation |
+| **III** | Direct Preference Optimization (DPO) | Qwen 1.5B — behavioral alignment |
 
-### Implemented Components
-
-| Class / Function | Description |
-|-----------------|-------------|
-| `MultiHeadAttention.__init__` | Q/K/V/O projection matrices |
-| `MultiHeadAttention.causal_attention_mask` | Upper-triangular causal mask |
-| `MultiHeadAttention.forward` | Scaled dot-product attention with causal + padding masking |
-| `plot_attention_matrix` | Heatmap of attention weights |
-| `TransformerEmbeddings.__init__` | Token + positional embedding tables |
-| `TransformerEmbeddings.compute_logits` | Weight-tied vocabulary projection |
-| `TransformerEmbeddings.forward` | Sum of token and position embeddings |
-| `EncoderDecoderModel.__init__` | Full encoder-decoder with `nn.ModuleList` |
-| `EncoderDecoderModel.forward_encoder` | Encoder stack forward pass |
-| `EncoderDecoderModel.forward_decoder` | Decoder stack + logit projection |
-| `map_example` | Tokenise source/target text pairs |
-
-### Setup
-```bash
-pip install transformers==4.27.0 datasets==2.10.0 nltk tqdm torch
-# Download assignment resources
-wget https://princeton-nlp.github.io/cos484/assignments/a4/resources.zip
-unzip resources.zip
-jupyter notebook a4_neural_machine_translation.ipynb
-```
+DPO β-sensitivity analysis: tested β ∈ {0.1, 0.5, 0.8, 1.0} to balance capability vs. guardrails; tracked with **wandb**.
 
 ---
 
-## Repository Structure
+## Getting Started
 
-```
-.
-├── lab2.ipynb                           # Word2Vec + NER
-├── lab3.ipynb                           # NMT (Transformer + RNN)
-├── a4_neural_machine_translation.ipynb  # NMT assignment implementation
-├── requirements.txt
-└── README.md
-```
-
----
-
-## Requirements
-
-```
-torch>=1.13
-datasets>=2.10
-transformers>=4.27
-scikit-learn>=1.0
-matplotlib>=3.5
-numpy>=1.21
-tqdm
-nltk
-```
-
-Install everything:
 ```bash
+git clone https://github.com/Ibrahimtareq952001/Natural-Language-Processing-Labs.git
+cd Natural-Language-Processing-Labs
 pip install -r requirements.txt
+jupyter notebook
 ```
 
 ---
 
-## Key References
+<div align="center">
 
-- Mikolov et al. (2013). [Distributed Representations of Words and Phrases](https://arxiv.org/abs/1310.4546)
-- Bahdanau et al. (2015). [Neural Machine Translation by Jointly Learning to Align and Translate](https://arxiv.org/abs/1409.0473)
-- Vaswani et al. (2017). [Attention Is All You Need](https://arxiv.org/abs/1706.03762)
-- Sang & De Meulder (2003). [Introduction to the CoNLL-2003 Shared Task](https://aclanthology.org/W03-0419/)
+*NLP & Machine Learning — Alexandria University 2024*
+
+[![Resume](https://img.shields.io/badge/View_Resume-PDF-008080?style=flat-square&logo=latex&logoColor=white)](https://github.com/Ibrahimtareq952001/Resume/blob/main/resume.pdf)
+[![Portfolio](https://img.shields.io/badge/GitHub-Ibrahimtareq952001-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/Ibrahimtareq952001)
+
+</div>
+
+<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=2,8,16&height=100&section=footer"/>
